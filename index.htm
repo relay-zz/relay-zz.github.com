@@ -1,6 +1,152 @@
 <!doctype html>
 <html>
-<head><title>Relay</title></head>
+<head><title>Relay: The Message-Passing Framework</title>
+<style>
+html, body, table, tr, td, dd, dt, dl, h1, h2, h3 {margin:0; padding:0; border:0; font:normal 12pt georgia,times,serif}
+body {line-height:1.7em; padding:2% 1%}
+h1, h2, h3 {font-weight:bold; margin:2em 0 0.5em 0}
+h1 {font-size:2.5em; margin:0 auto; text-align:center} h2 {font-size:1.8em} h3 {font-size:1.1em}
+#main {margin:0 15%; min-width:600px}
+#summary {margin:1em auto; padding:0 15%; max-width:600px; color:#666; font-style:italic; text-align:justify}
+pre, tt {white-space:pre-wrap; font:bold 0.9em consolas,monospace}
+tt {background:#eee; padding:0 0.3em}
+pre {border:1px solid #ccc; background:#f6f6f6; padding:1% 2%; box-shadow:inset 1px 1px 13px #bbb}
+pre .h {color:#bbb; font-weight:normal}
+pre .m1 {color:#e22}
+pre .m2 {color:#44c}
+pre .m3 {color:#4c4}
+pre .m4 {color:#cc0}
+pre .m5 {color:#b0b}
+dl, dt, dd {line-height:inherit}
+dd {margin:1em 0 1em 4%}
+</style>
+</head>
 <body>
+  <h1>relay</h1>
+
+  <div id="main">
+
+    <div id="summary">
+    Relay is a javascript based framework for organizing web applications into scoped 
+    modules and communication is done by passing messages along the HTML tree structure, 
+    thereby eliminating the need to pass object references around.
+    </div>
+
+    <h3>How to set up event listeners:</h3>
+
+<pre>
+<b class="h">&lt;body&gt;</b>
+  &lt;ins <b class="m3">cite="js:Spinner"</b>&gt;
+    &lt;input type=text value="0"&gt;
+    &lt;input type=button onclick="<b class="m1">relay('spinDownClick', this);</b>"&gt;
+    &lt;input type=button onclick="<b class="m2">relay('spinUpClick', this);</b>"&gt;
+  &lt;/ins&gt;
+<b class="h">&lt;/body&gt;</b>
+
+<b class="h">&lt;script language=javascript&gt;</b>
+<b class="m3">function Spinner</b>(name, node) {...}
+
+Spinner.prototype = {
+  value: 0,
+  <b class="m1">spinDownClick: function()</b> {
+    this.relayBaseNode.getElementsByTagName("input")[0].value -= 1;
+  },
+  <b class="m2">spinUpClick: function()</b> {
+    this.relayBaseNode.getElementsByTagName("input")[0].value += 1;
+  }
+};
+<b class="h">&lt;/script&gt;</b></pre>
+
+    <h3>How to pass messages up the HTML tree:</h3>
+
+<pre>
+<b class="h">&lt;body&gt;</b>
+  &lt;ins <b class="m4">cite="js:CartItem"</b>&gt;
+    ...
+    &lt;ins <b class="m3">cite="js:Spinner"</b>&gt;
+      &lt;input type=text value="0"&gt;
+      &lt;input type=button onclick="relay('spinDownClick', this);"&gt;
+      &lt;input type=button onclick="relay('spinUpClick', this);"&gt;
+    &lt;/ins&gt;
+    ...
+  &lt;/ins&gt;
+<b class="h">&lt;/body&gt;</b>
+
+<b class="h">&lt;script language=javascript&gt;</b>
+<b class="m3">function Spinner</b>(name, node) {...}
+
+Spinner.prototype = {
+  value: 0,
+  spinDownClick: function() {
+    var elm = this.relayBaseNode.getElementsByTagName("input")[0];
+    elm.value -= 1;
+    <b class="m5">relay("quantityChanged", elm.value, this);</b>
+  },
+  spinUpClick: function() {
+    var elm = this.relayBaseNode.getElementsByTagName("input")[0];
+    elm.value += 1;
+    <b class="m5">this.relay("quantityChanged", elm.value);</b>  <b class="h">//alternate syntax</b>
+  }
+};
+
+<b class="m4">function CartItem</b>(name, node) {...}
+
+CartItem.prototype = {
+  <b class="m5">quantityChanged: function</b>(num) {
+    //...
+  }
+};
+<b class="h">&lt;/script&gt;</b></pre>
+
+    <h3>Interacting with the module behind the node:</h3>
+
+<pre>
+<b class="h">&lt;body&gt;</b>
+  &lt;ins <b class="m2">id="pics"</b> <b class="m1">cite="js:acme.Photos"</b>&gt;&lt;/ins&gt;
+<b class="h">&lt;/body&gt;</b>
+
+<b class="h">&lt;script language=javascript&gt;</b>
+var acme = {
+  Photos: function(name, node) {...}
+};
+
+acme.Photos.prototype = {
+  <b class="m1">fitToScreen: function()</b> {...}
+};
+...
+function action() {
+  <b class="m2">relay.byId("pics")</b><b class="m1">.fitToScreen();</b>
+
+  <b class="h">// or by using jQuery:</b>
+  jQuery("#pics").each(function() {
+    <b class="m2">relay.byId(this)</b><b class="m1">.fitToScreen();</b>
+  });
+}
+<b class="h">&lt;/script&gt;</b></pre>
+
+    <h2>Syntax</h2>
+    <dl>
+      <dt>
+      Syntax: <tt>relay(name, [parameters]*, this)</tt><br>
+      Example: <tt>relay("mailto", "spam@hotmail.com", false, 9, this)</tt> &rArr; <tt>mailto("spam@hotmail.com", false, 9)</tt>
+      </dt>
+
+      <dd>Walks down the node tree starting from the current node until it finds a Javascript object 
+      with a method called <tt>name</tt> and calls it while passing in the supplied parameter. If the 
+      <tt>name</tt> method returns the object <tt>relay.BUBBLE</tt>, then we continue to walk down the 
+      node tree to the next node with a Javascript object with the same method and try again.</dd>
+
+      <dt>
+      Syntax: <tt>&lt;ins cite="js:name"&gt;&lt;/ins&gt;</tt><br>
+      Example: <tt>&lt;ins cite="js:acme.DatePicker"&gt;&lt;/ins&gt;</tt> &rArr; <tt>new acme.DatePicker("acme.widgets.DatePicker", node)</tt>
+      </dt>
+
+      <dd>Finds and initializes the object called <tt>name</tt>. A reference to the object is kept
+      privately inside Relay and can be retrieved by calling <tt>relay.byId(document.getElementById("item1"))</tt>
+      or <tt>relay.byId("item1")</tt> assuming that the element has an id of "item1".
+      </dd>
+    </dl>
+
+  </div>
 </body>
 </html>
