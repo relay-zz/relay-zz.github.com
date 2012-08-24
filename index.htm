@@ -12,7 +12,7 @@ h1 {font-size:2.5em; margin:0 auto; text-align:center} h2 {font-size:1.8em} h3 {
 #summary {margin:1em auto; padding:0 15%; max-width:600px; color:#666; font-style:italic; text-align:justify}
 pre, tt {white-space:pre-wrap; font:0.9em consolas,monospace}
 tt {background:#eee; padding:0.1em 0.3em}
-pre {border:1px solid #ccc; background:#f6f6f6; padding:1% 2%; box-shadow:inset 1px 1px 13px #bbb}
+pre {border:1px solid #ccc; background:#f6f6f6; padding:1% 2%; box-shadow:inset 1px 1px 10px #bbb}
 pre .h {color:#bbb; font-weight:normal}
 pre .m1 {color:#e22}
 pre .m2 {color:#44c}
@@ -100,7 +100,7 @@ CartItem.prototype = {
 };
 <b class="h">&lt;/script&gt;</b></pre>
 
-    <h3>Interacting with the module behind the node:</h3>
+    <h3>Interacting with the module hidden by the node:</h3>
 
 <pre>
 <b class="h">&lt;body&gt;</b>
@@ -144,7 +144,9 @@ function action() {
     written when making single-page web applications.
 
     <h2>Download</h2>
-    <a href="https://github.com/relay/relay" style="font-size:1.5em">Relay on Github</a>
+    <a href="http://github.com/relay/relay" style="font-size:1.5em">Relay on Github</a>
+    <a href="http://github.com/relay/relay/blob/master/relay-dev.js" style="font-size:1.2em; margin:0 2em">View Source</a>
+    <a href="http://raw.github.com/relay/relay/master/relay.js" style="font-size:1.2em">Download Minified (1.4k)</a>
 
     <h2>Syntax</h2>
     <dl>
@@ -154,9 +156,11 @@ function action() {
       </dt>
 
       <dd>Walks down the node tree starting from the current node until it finds a Javascript object 
-      with a method called <tt>name</tt> and calls it while passing in the supplied parameter. If the 
-      <tt>name</tt> method returns the object <tt>relay.BUBBLE</tt>, then we continue to walk down the 
-      node tree to the next node with a Javascript object with the same method and try again.</dd>
+      with a function called <tt>name</tt> and calls it while passing in the supplied parameters. If the 
+      <tt>name</tt> function returns the object <tt>relay.BUBBLE</tt>, then we continue to walk down the 
+      node tree to the next node with a Javascript object with the same method and try again.
+
+      <p>The return value of the <tt>name</tt> function is also returned by relay.</dd>
 
       <dt>
       Syntax: <tt>relay(inlineFunction, [parameters]*, this)</tt><br>
