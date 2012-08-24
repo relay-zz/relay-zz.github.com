@@ -1,15 +1,17 @@
 <!doctype html>
 <html>
 <head><title>Relay: The Message-Passing Framework</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=980">
 <style>
 html, body, table, tr, td, dd, dt, dl, h1, h2, h3 {margin:0; padding:0; border:0; font:normal 12pt georgia,times,serif}
 body {line-height:1.7em; padding:2% 1%}
 h1, h2, h3 {font-weight:bold; margin:2em 0 0.5em 0}
 h1 {font-size:2.5em; margin:0 auto; text-align:center} h2 {font-size:1.8em} h3 {font-size:1.1em}
-#main {margin:0 15%; min-width:600px}
+#main {margin:0 auto; padding:1%; max-width:900px; min-width:600px}
 #summary {margin:1em auto; padding:0 15%; max-width:600px; color:#666; font-style:italic; text-align:justify}
-pre, tt {white-space:pre-wrap; font:bold 0.9em consolas,monospace}
-tt {background:#eee; padding:0 0.3em}
+pre, tt {white-space:pre-wrap; font:0.9em consolas,monospace}
+tt {background:#eee; padding:0.1em 0.3em}
 pre {border:1px solid #ccc; background:#f6f6f6; padding:1% 2%; box-shadow:inset 1px 1px 13px #bbb}
 pre .h {color:#bbb; font-weight:normal}
 pre .m1 {color:#e22}
@@ -18,7 +20,7 @@ pre .m3 {color:#4c4}
 pre .m4 {color:#cc0}
 pre .m5 {color:#b0b}
 dl, dt, dd {line-height:inherit}
-dd {margin:1em 0 1em 4%}
+dd {margin:1em 0 2em 4%}
 </style>
 </head>
 <body>
@@ -124,8 +126,25 @@ function action() {
 }
 <b class="h">&lt;/script&gt;</b></pre>
 
+    <h2>Benefits</h2>
+    Relay allows you to write application modules without needing to worry 
+    about how they link together. This is particularly useful when writing 
+    single-page web application. You can swap modules in and out or nest 
+    modules within one another simply by manipulating the HTML at any time 
+    even when the application is already running.
+
+    <p>One of the pains in writing complex applications is the need to add 
+    callbacks and event listeners in all child objects and removing the
+    event listeners when the child object is removed. Relay eliminates the 
+    need for these callback functions by allowing child objects to dispatch 
+    events to it's parent and ancestor objects systematically following 
+    the path of the HTML tree.
+
+    <p>This reduces a lot of the clean up code that typically needs to be 
+    written when making single-page web applications.
+
     <h2>Download</h2>
-    <a href="https://github.com/relay/relay" style="font-size:1.5em">Relay on GitHub</a>
+    <a href="https://github.com/relay/relay" style="font-size:1.5em">Relay on Github</a>
 
     <h2>Syntax</h2>
     <dl>
@@ -140,6 +159,14 @@ function action() {
       node tree to the next node with a Javascript object with the same method and try again.</dd>
 
       <dt>
+      Syntax: <tt>relay(inlineFunction, [parameters]*, this)</tt><br>
+      Example: <tt>relay(function() {this.chatName = ""}, this)</tt>
+      </dt>
+
+      <dd>Same behavior as above, but does not match to a function name, but instead executes on the first 
+      object found in the HTML tree.</dd>
+
+      <dt>
       Syntax: <tt>&lt;ins cite="js:name"&gt;&lt;/ins&gt;</tt><br>
       Example: <tt>&lt;ins cite="js:acme.DatePicker"&gt;&lt;/ins&gt;</tt> &rArr; <tt>new acme.DatePicker("acme.widgets.DatePicker", node)</tt>
       </dt>
@@ -150,6 +177,9 @@ function action() {
       </dd>
     </dl>
 
+    <div style="border-top:1px dashed #ccc; padding:0.1em 0; font-size:0.7em; text-align:center; color:#999">
+    Copyright &copy; 2012
+    </div>
   </div>
 </body>
 </html>
