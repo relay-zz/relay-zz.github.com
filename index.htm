@@ -4,7 +4,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=980">
 <style>
-html, body, table, tr, td, dd, dt, dl, h1, h2, h3 {margin:0; padding:0; border:0; font:normal 12pt georgia,times,serif}
+html, body, table, tr, td, dl, dd, dt, h1, h2, h3 {margin:0; padding:0; border:0; font:normal 12pt georgia,times,serif}
 body {line-height:1.7em; padding:2% 1%}
 h1, h2, h3 {font-weight:bold; margin:2em 0 0.5em 0}
 h1 {font-size:2.5em; margin:0 auto; text-align:center} h2 {font-size:1.8em} h3 {font-size:1.1em}
@@ -20,7 +20,9 @@ pre .m3 {color:#4c4}
 pre .m4 {color:#cc0}
 pre .m5 {color:#b0b}
 dl, dt, dd {line-height:inherit}
-dd {margin:1em 0 2em 4%}
+dl {border:solid #ccc; border-width:1px 1px 0 1px}
+dt {margin:1em 0 0 0; padding:0 1%}
+dd {padding:1em 1% 1em 4%; border-bottom:1px solid #ccc}
 </style>
 </head>
 <body>
@@ -126,22 +128,33 @@ function action() {
 }
 <b class="h">&lt;/script&gt;</b></pre>
 
-    <h2>Benefits</h2>
-    Relay allows you to write application modules without needing to worry 
-    about how they link together. This is particularly useful when writing 
-    single-page web application. You can swap modules in and out or nest 
-    modules within one another simply by manipulating the HTML at any time 
-    even when the application is already running.
+    <h2>Features</h2>
+    <div style="padding:0.5% 2%; margin:0 5%; border:1px solid #ccc; background:#eee">
+      <h3 style="margin:0.5em 0">Relay</h3>
+      <div style="margin:1em 4%; padding:0.5% 2%; border:1px solid #dbb; background:#fdd">
+        <h3 style="margin:0.5em 0">Module Framework</h3>
+        For writing standalone HTML components that are de-coupled from 
+        each other. HTML components have a Javascript class from which it
+        derives it's methods and properties. HTML components can be nested 
+        within one another without knowing it.
+      </div>
+      <div style="margin:1em 4%; padding:0.5% 2%; border:1px solid #bdb; background:#dfd">
+        <h3 style="margin:0.5em 0">Messaging Framework</h3>
+        The pipeline for passing messages between HTML components. The 
+        direction of travel is always from the leaf node to the root node.
+        Messages can return values allowing for the root node to provide a
+        response to the leaf node.
 
-    <p>One of the pains in writing complex applications is the need to add 
-    callbacks and event listeners in all child objects and removing the
-    event listeners when the child object is removed. Relay eliminates the 
-    need for these callback functions by allowing child objects to dispatch 
-    events to it's parent and ancestor objects systematically following 
-    the path of the HTML tree.
+        <p>Unlike traditional event handlers, you do not need to know of 
+        the existence of a parent to pass messages to a parent. And you 
+        do not need to know the existence of a child to listen in on the 
+        child.
 
-    <p>This reduces a lot of the clean up code that typically needs to be 
-    written when making single-page web applications.
+        <p>Unlike the publish-subscribe model, messages are not broadcast
+        to everyone, and are only received by the parent and ancestor 
+        components in hierarchical order.
+      </div>
+    </div>
 
     <h2>Download</h2>
     <a href="http://github.com/relay/relay" style="font-size:1.5em">Relay on Github</a>
@@ -179,9 +192,24 @@ function action() {
       privately inside Relay and can be retrieved by calling <tt>relay.byId(document.getElementById("item1"))</tt>
       or <tt>relay.byId("item1")</tt> assuming that the element has an id of "item1".
       </dd>
+
+      <dt>
+      Syntax: <tt>obj = relay.byId(nodeOrID)</tt><br>
+      </dt>
+
+      <dd>Get's the Javascript object hidden by the supplied node or supplied node ID. This is the same
+      as calling <tt>relay.byId(document.getElementById(id))</tt>.</dd>
+
+      <dt>
+      Syntax: <tt>relay.hookObjectToNode(obj, node)</tt><br>
+      Example: <tt>relay.hookObjectToNode(new acme.DatePicker(), document.getElementById("dp1"))</tt>
+      </dt>
+
+      <dd>
+      </dd>
     </dl>
 
-    <div style="border-top:1px dashed #ccc; padding:0.1em 0; font-size:0.7em; text-align:center; color:#999">
+    <div style="border-top:1px dashed #ccc; margin-top:1em; padding:0.1em 0; font-size:0.7em; text-align:center; color:#999">
     Copyright &copy; 2012
     </div>
   </div>
