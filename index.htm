@@ -161,7 +161,7 @@ function action() {
     <a href="http://github.com/relay/relay/blob/master/relay-dev.js" style="font-size:1.2em; margin:0 2em">View Source</a>
     <a href="http://raw.github.com/relay/relay/master/relay.js" style="font-size:1.2em">Download Minified (1.4k)</a>
 
-    <h2>Syntax</h2>
+    <h2>API</h2>
     <dl>
       <dt>
       Syntax: <tt>relay(name, [parameters]*, this)</tt><br>
@@ -205,8 +205,21 @@ function action() {
       Example: <tt>relay.hookObjectToNode(new acme.DatePicker(), document.getElementById("dp1"))</tt>
       </dt>
 
-      <dd>
+      <dd>Creates a mapping within Relay that maps the node to the object. The node is also stored 
+      on the object as a property called <tt>relayBaseNode</tt>. If given a node reference, you can 
+      retrieve the object by calling <tt>relay.byId(nodeRef)</tt>.
       </dd>
+
+      <dt>
+      Syntax: <tt>relay.start()</tt> or <tt>relay.initTree(node)</tt>
+      </dt>
+
+      <dd>Called when the webpage is first loaded to parse the HTML document 
+      for modules and to initialize the modules. If parts of the HTML are created dynamically, then you can 
+      call <tt>initTree(node)</tt> to initialize new sections of the webpage. Calling it multiple 
+      times won't create duplicates as checks are added to avoid this.
+      
+      <p>You should call this at the bottom of your webpage before the ending body tag.</dd>
     </dl>
 
     <div style="border-top:1px dashed #ccc; margin-top:1em; padding:0.1em 0; font-size:0.7em; text-align:center; color:#999">
