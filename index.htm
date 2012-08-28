@@ -4,7 +4,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=980">
 <style>
-html, body, table, tr, td, dl, dd, dt, h1, h2, h3 {margin:0; padding:0; border:0; font:normal 12pt georgia,times,serif}
+html, body, table, tr, td, dl, dd, dt, h1, h2, h3, h4 {margin:0; padding:0; border:0; font:normal 12pt georgia,times,serif}
 body {line-height:1.7em; padding:2% 1%}
 h1, h2, h3 {font-weight:bold; margin:2em 0 0.5em 0}
 h1 {font-size:2.5em; margin:0 auto; text-align:center} h2 {font-size:1.8em} h3 {font-size:1.1em}
@@ -21,6 +21,7 @@ pre .m4 {color:#cc0}
 pre .m5 {color:#b0b}
 dl, dt, dd {line-height:inherit}
 dl {border:solid #ccc; border-width:1px 1px 0 1px}
+dl h4 {background:#ddd; padding:0.3em 0.5em; font-weight:bold}
 dt {margin:1em 0 0 0; padding:0 1%}
 dd {padding:1em 1% 1em 4%; border-bottom:1px solid #ccc}
 </style>
@@ -140,29 +141,41 @@ function action() {
       </div>
       <div style="margin:1em 4%; padding:0.5% 2%; border:1px solid #bdb; background:#dfd">
         <h3 style="margin:0.5em 0">Messaging Framework</h3>
-        The pipeline for passing messages between HTML components. The 
-        direction of travel is always from the leaf node to the root node.
-        Messages can return values allowing for the root node to provide a
-        response to the leaf node.
-
-        <p>Unlike traditional event handlers, you do not need to know of 
+        The pipeline for passing messages between HTML components. Like 
+        the module framework, you do not need to know of 
         the existence of a parent to pass messages to a parent. And you 
-        do not need to know the existence of a child to listen in on the 
-        child.
+        do not need to know the existence of children to listen in on 
+        children calling.
 
-        <p>Unlike the publish-subscribe model, messages are not broadcast
-        to everyone, and are only received by the parent and ancestor 
-        components in hierarchical order.
+        <div style="margin:1em 0 1em 4%; padding:0.5% 2%; border:1px solid #bbd; background:#ddf">
+          <h3 style="margin:0.5em 0">Upstream</h3>
+          Upstream messages always travel towards the root node and are only 
+          received by the parent and ancestor components in hierarchical order.
+          Messages can return values allowing 
+          for the root node to provide a response to the leaf node.
+        </div>
+
+        <div style="margin:1em 0 1em 4%; padding:0.5% 2%; border:1px solid #bbd; background:#ddf">
+          <h3 style="margin:0.5em 0">Downstream</h3>
+          Downstream messages travel from the current node to all the leaf 
+          nodes. Objects are implicitly subscribed if they are part 
+          of the HTML tree and are implicitly unsubscribed if they are 
+          removed from the HTML tree.
+
+          <p>Unlike the publish-subscribe model, messages are only 
+          broadcast to the node's descendants.
+        </div>
       </div>
     </div>
 
     <h2>Download</h2>
     <a href="http://github.com/relay/relay" style="font-size:1.5em">Relay on Github</a>
     <a href="http://github.com/relay/relay/blob/master/relay-dev.js" style="font-size:1.2em; margin:0 2em">View Source</a>
-    <a href="http://raw.github.com/relay/relay/master/relay.js" style="font-size:1.2em">Download Minified (1.4k)</a>
+    <a href="http://raw.github.com/relay/relay/master/relay.js" style="font-size:1.2em">Download Minified (1.7k)</a>
 
     <h2>API</h2>
     <dl>
+      <h4>Passing Messages to Parents:</h4>
       <dt>
       Syntax: <tt>relay(name, [parameters]*, this)</tt><br>
       Example: <tt>relay("mailto", "spam@hotmail.com", false, 9, this)</tt> &rArr; <tt>mailto("spam@hotmail.com", false, 9)</tt>
@@ -183,9 +196,31 @@ function action() {
       <dd>Same behavior as above, but does not match to a function name, but instead executes on the first 
       object found in the HTML tree.</dd>
 
+      <h4>Passing Messages to Decendants:</h4>
       <dt>
-      Syntax: <tt>&lt;ins cite="js:name"&gt;&lt;/ins&gt;</tt><br>
-      Example: <tt>&lt;ins cite="js:acme.DatePicker"&gt;&lt;/ins&gt;</tt> &rArr; <tt>new acme.DatePicker("acme.widgets.DatePicker", node)</tt>
+      Syntax: <tt>relay.publish(name, [parameters]*, this)</tt><br>
+      Example: <tt>relay.publish("foldersChanged", this)</tt>
+      </dt>
+
+      <dd>Gets a list of descendant elements of the current node, which are modules and check if the module has 
+      a <tt>subscribe</tt> property on it. If so, check if the <tt>subscribe</tt> object has a property
+      called <tt>name</tt> that points to a function. If so, execute the function with the <tt>this</tt> scope
+      set to the module.
+
+<p><tt>Folder = {
+  subscribe: {
+    "foldersChanged": function() {
+      alert(this.name);
+    }
+  },
+  name: "Inbox"
+}</tt>
+      </dd>
+
+      <h4>Defining HTML Modules:</h4>
+      <dt>
+      Syntax: <tt>&lt;INS cite="js:name"&gt;&lt;/INS&gt;</tt><br>
+      Example: <tt>&lt;INS cite="js:acme.DatePicker"&gt;&lt;/INS&gt;</tt> &rArr; <tt>new acme.DatePicker("acme.widgets.DatePicker", node)</tt>
       </dt>
 
       <dd>Finds and initializes the object called <tt>name</tt>. A reference to the object is kept
@@ -193,6 +228,7 @@ function action() {
       or <tt>relay.byId("item1")</tt> assuming that the element has an id of "item1".
       </dd>
 
+      <h4>Interacting with Modules:</h4>
       <dt>
       Syntax: <tt>obj = relay.byId(nodeOrID)</tt><br>
       </dt>
@@ -200,18 +236,10 @@ function action() {
       <dd>Get's the Javascript object hidden by the supplied node or supplied node ID. This is the same
       as calling <tt>relay.byId(document.getElementById(id))</tt>.</dd>
 
+      <h4>Loading Relay:</h4>
       <dt>
-      Syntax: <tt>relay.hookObjectToNode(obj, node)</tt><br>
-      Example: <tt>relay.hookObjectToNode(new acme.DatePicker(), document.getElementById("dp1"))</tt>
-      </dt>
-
-      <dd>Creates a mapping within Relay that maps the node to the object. The node is also stored 
-      on the object as a property called <tt>relayBaseNode</tt>. If given a node reference, you can 
-      retrieve the object by calling <tt>relay.byId(nodeRef)</tt>.
-      </dd>
-
-      <dt>
-      Syntax: <tt>relay.start()</tt> or <tt>relay.initTree(node)</tt>
+      Syntax: <tt>relay.start()</tt> or <tt>relay.initTree(node)</tt><br>
+      Example: <tt>window.onload = function() { relay.start(); }</tt>
       </dt>
 
       <dd>Called when the webpage is first loaded to parse the HTML document 
@@ -219,7 +247,7 @@ function action() {
       call <tt>initTree(node)</tt> to initialize new sections of the webpage. Calling it multiple 
       times won't create duplicates as checks are added to avoid this.
       
-      <p>You should call this at the bottom of your webpage before the ending body tag.</dd>
+      <p>You should call this at the bottom of your webpage before the ending <tt>&lt;/BODY&gt;</tt> tag.</dd>
     </dl>
 
     <div style="border-top:1px dashed #ccc; margin-top:1em; padding:0.1em 0; font-size:0.7em; text-align:center; color:#999">
