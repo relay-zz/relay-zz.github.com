@@ -89,7 +89,7 @@ Spinner.prototype = {
   spinUpClick: function() {
     var elm = this.relayBaseNode.getElementsByTagName("input")[0];
     elm.value += 1;
-    <b class="m5">this.relay("quantityChanged", elm.value);</b>  <b class="h">//alternate syntax</b>
+    <b class="m5">relay("quantityChanged", elm.value, this);</b>
   }
 };
 
