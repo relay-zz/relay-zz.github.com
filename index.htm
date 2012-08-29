@@ -141,29 +141,26 @@ function action() {
       </div>
       <div style="margin:1em 4%; padding:0.5% 2%; border:1px solid #bdb; background:#dfd">
         <h3 style="margin:0.5em 0">Messaging Framework</h3>
-        The pipeline for passing messages between HTML components. Like 
-        the module framework, you do not need to know of 
-        the existence of a parent to pass messages to a parent. And you 
-        do not need to know the existence of children to listen in on 
-        children calling.
 
         <div style="margin:1em 0 1em 4%; padding:0.5% 2%; border:1px solid #bbd; background:#ddf">
           <h3 style="margin:0.5em 0">Upstream</h3>
-          Upstream messages always travel towards the root node and are only 
-          received by the parent and ancestor components in hierarchical order.
-          Messages can return values allowing 
-          for the root node to provide a response to the leaf node.
+          HTML components can pass messages to parent components.
+          Unlike the event listener model, you do not need to know of 
+          the existence of a parent to pass messages to a parent. And you 
+          do not need to know the existence of children to listen in on 
+          children calling.
+          Messages can return values allowing for the root node to provide 
+          a response to the leaf node.
         </div>
 
         <div style="margin:1em 0 1em 4%; padding:0.5% 2%; border:1px solid #bbd; background:#ddf">
           <h3 style="margin:0.5em 0">Downstream</h3>
-          Downstream messages travel from the current node to all the leaf 
-          nodes. Objects are implicitly subscribed if they are part 
+          HTML components can broadcast messages like the publish-subscribe
+          model, but messages are scoped to the current node, so only it's
+          children can receive them. 
+          Objects are implicitly subscribed if they are part 
           of the HTML tree and are implicitly unsubscribed if they are 
           removed from the HTML tree.
-
-          <p>Unlike the publish-subscribe model, messages are only 
-          broadcast to the node's descendants.
         </div>
       </div>
     </div>
@@ -196,10 +193,10 @@ function action() {
       <dd>Same behavior as above, but does not match to a function name, but instead executes on the first 
       object found in the HTML tree.</dd>
 
-      <h4>Passing Messages to Decendants:</h4>
+      <h4>Passing Messages to Children:</h4>
       <dt>
       Syntax: <tt>relay.publish(name, [parameters]*, this)</tt><br>
-      Example: <tt>relay.publish("foldersChanged", this)</tt>
+      Example: <tt>relay.publish("refresh", this)</tt>
       </dt>
 
       <dd>Gets a list of descendant elements of the current node, which are modules and check if the module has 
@@ -209,7 +206,7 @@ function action() {
 
 <p><tt>Folder = {
   subscribe: {
-    "foldersChanged": function() {
+    "refresh": function() {
       alert(this.name);
     }
   },
