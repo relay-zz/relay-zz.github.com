@@ -40,6 +40,7 @@ dd {padding:1em 1% 1em 4%; border-bottom:1px solid #ccc}
     <h3>How to set up event listeners:</h3>
 
 <pre>
+<b class="h">&lt;style&gt; ins {text-decoration:none} &lt;/style&gt;</b>
 <b class="h">&lt;body&gt;</b>
   &lt;ins <b class="m3">cite="js:Spinner"</b>&gt;
     &lt;input type=text value="0"&gt;
@@ -223,6 +224,8 @@ function action() {
       <dd>Finds and initializes the object called <tt>name</tt>. A reference to the object is kept
       privately inside Relay and can be retrieved by calling <tt>relay.byId(document.getElementById("item1"))</tt>
       or <tt>relay.byId("item1")</tt> assuming that the element has an id of "item1".
+      <p>Be sure to reset the natural CSS styles of <tt>&lt;INS&gt;</tt> elements or else everything will turn up underlined:<br>
+      <tt>&lt;style&gt; ins {text-decoration:none} &lt;/style&gt;</tt>
       </dd>
 
       <h4>Interacting with Modules:</h4>
