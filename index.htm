@@ -196,8 +196,8 @@ function action() {
 
       <h4>Passing Messages to Children:</h4>
       <dt>
-      Syntax: <tt>relay.publish(name, [parameters]*, this)</tt><br>
-      Example: <tt>relay.publish("refresh", this)</tt>
+      Syntax: <tt>relay.forward(name, [parameters]*, this)</tt><br>
+      Example: <tt>relay.forward("refresh", this)</tt>
       </dt>
 
       <dd>Gets a list of descendant elements of the current node, which are modules and check if the module has 
