@@ -5,7 +5,7 @@
 <script>function byId(s) {return document.getElementById(s)}</script>
 <style>
 body {margin:1%; padding:0; background:#fff; white-space:nowrap}
-table, td, tr {margin:0; padding:0; border:0; border-collapse:collapse}
+table, td, th, tr {margin:0; padding:0; border:0; border-collapse:collapse}
 td {width:50%; padding:6px 3px; vertical-align:middle; border:1px solid #eee}
 textarea {height:100px; width:98%; white-space:normal}
 .sect div {padding:2px; background:#dd5; border:1px solid #aa0; margin:2px}
@@ -14,6 +14,10 @@ textarea {height:100px; width:98%; white-space:normal}
 <body>
 <h3>demo of anim features:</h3>
 <table cellspacing=0 style="width:100%; margin:0 auto; max-width:980px">
+  <tr>
+    <th>Result</th>
+    <th>Code</th>
+  </tr>
   <tr>
     <td class="sect">
       <div id=a1 style="width:0">ease-in</div>
@@ -38,7 +42,7 @@ textarea {height:100px; width:98%; white-space:normal}
     </td><td>
       <textarea id=bt readonly>
       anim("b1", {width:"150px", height:"150px"}, 0.5).anim(0.5)
-      .anim("b1", {width:"60px", height:"60px"}, 0.5).anim(0.5)
+      .anim("b1", {width:{to:"60px", e:"ease-in"}, height:"60px"}, 0.5).anim(0.5)
       .anim(goB);
       </textarea>
     <script>function goB() { eval(byId("bt").value) } goB();</script>
@@ -79,8 +83,8 @@ textarea {height:100px; width:98%; white-space:normal}
       <div id=e1 style="padding:3px; font-size:12pt">color</div>
     </td><td>
       <textarea id=et readonly>
-      anim("e1", {fontSize:{fr:"12pt", to:30}}, 1)
-      .anim("e1", {fontSize:{fr:"30pt", to:12}}, 1)
+      anim("e1", {fontSize:{fr:"12pt", to:30}, opacity:0.4}, 1)
+      .anim("e1", {fontSize:{fr:"30pt", to:12}, opacity:1}, 1)
       .anim(1)
       .anim(goE);
       </textarea>
@@ -111,6 +115,6 @@ textarea {height:100px; width:98%; white-space:normal}
   </tr>
 </table>
 
-<a href="http://github.com/relay/anim">Back to Anim Library</a>
+<a href="http://github.com/relay/anim/">&lt; Back to Anim Library</a>
 </body>
 </html>
