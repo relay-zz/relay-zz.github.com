@@ -41,7 +41,8 @@ anim("a4", {width:"90%"}, 3, "lin").anim(1).anim("a4", {width:0}, 1, "lin").anim
       <div id=b1 style="width:60px; height:60px"> </div>
     </td><td>
       <textarea id=bt readonly>
-anim("b1", {width:"150px", height:"150px"}, 0.5).anim(0.5)
+anim(1)
+.anim("b1", {width:"150px", height:"150px"}, 0.5).anim(0.5)
 .anim("b1", {width:{to:"60px", e:"ease-in"}, height:"60px"}, 0.5).anim(0.5)
 .anim(goB);
       </textarea>
@@ -66,7 +67,7 @@ anim("c1", {borderRadius:"30px", left:"50%"}, 1.5, "ease-out")
 
   <tr>
     <td class="sect">
-      <div id=d1 style="padding:1em; border:0; background-color:#fff">color</div>
+      <div id=d1 style="padding:1em; display:inline; text-transform:uppercase; border:0; background-color:#fff">color</div>
     </td><td>
       <textarea id=dt readonly>
 anim("d1", {backgroundColor:"#f66"}, 1).anim(function() {byId("d1").innerHTML="green"})
